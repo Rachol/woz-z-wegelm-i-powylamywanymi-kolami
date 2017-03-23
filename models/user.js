@@ -26,7 +26,7 @@ const User = module.exports = mongoose.model('User', UserSchema);
 
 // Export function for getting user by id
 module.exports.getUserById = function(id, callback){
-    User.findByID(id, callback);
+    User.findById(id, callback);
 };
 
 // Export function for getting user by name
@@ -43,5 +43,13 @@ module.exports.addUser = function(newUser, callback){
             newUser.password = hash;
             newUser.save(callback);
         });
+    });
+};
+
+//Password checj
+module.exports.comparePassword = function(candidatePassword, hash, callback){
+    bcrypt.compare(candidatePassword, hash, (err, isMatch) => {
+        if(err) throw err;
+        callback(null, isMatch);
     });
 };
