@@ -41,10 +41,10 @@ export class RegisterComponent implements OnInit {
           this.flashMessagesService.show('Please use a valid e-mail...', {cssClass: 'alert-danger', timeout: 3000});
           return false;
       }
-      
+
       // Register User
       this.authService.registerUser(user).subscribe(data => {
-          if (data.success){
+          if (data.success) {
               this.flashMessagesService.show('You are now registered and can log in', {cssClass: 'alert-success', timeout: 3000});
               this.router.navigate(['/login']);
           } else {
