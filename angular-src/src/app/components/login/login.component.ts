@@ -19,7 +19,23 @@ export class LoginComponent implements OnInit {
     ngOnInit() {
     }
 
+    getUserName() {
+        return this.username;
+    }
+
     onLoginSubmit() {
+        if (!this.username) {
+            // Username is missing
+            this.flashMessagesService.show('Please enter username', {cssClass: 'alert-danger', timeout: 3000});
+            return;
+        }
+
+        if (!this.password) {
+            // Password is missing
+            this.flashMessagesService.show('Please enter password', {cssClass: 'alert-danger', timeout: 3000});
+            return;
+        }
+
         const user = {
             username: this.username,
             password: this.password
