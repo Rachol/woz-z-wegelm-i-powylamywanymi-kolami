@@ -1,7 +1,4 @@
-// export for convenience.
-export { ActivatedRoute, Router, RouterLink, RouterOutlet} from '@angular/router';
-
-import { Component, Directive, Injectable, Input } from '@angular/core';
+import { Component, Directive, Input } from '@angular/core';
 import { NavigationExtras } from '@angular/router';
 
 @Directive({
@@ -18,9 +15,4 @@ export class RouterLinkStubDirective {
     onClick() {
         this.navigatedTo = this.linkParams;
     }
-}
-
-@Injectable()
-export class RouterStub {
-  navigate(commands: any[], extras?: NavigationExtras) { }
 }

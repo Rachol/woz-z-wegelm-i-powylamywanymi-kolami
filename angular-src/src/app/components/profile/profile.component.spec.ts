@@ -4,25 +4,49 @@ import { By } from '@angular/platform-browser';
 import { DebugElement } from '@angular/core';
 
 import { ProfileComponent } from './profile.component';
+import { AuthService } from '../../services/auth.service';
+
+import { BehaviorSubject } from 'rxjs/BehaviorSubject';
+
+let component: ProfileComponent;
+let fixture: ComponentFixture<ProfileComponent>;
+
+const testUserData = {
+    user: {
+        name: 'Name',
+        username: 'Username',
+        email: 'email'}
+};
+
+class AuthServiceStub {
+    getUserProfile() {
+        return new BehaviorSubject(testUserData).asObservable();
+    };
+}
 
 describe('ProfileComponent', () => {
-  let component: ProfileComponent;
-  let fixture: ComponentFixture<ProfileComponent>;
+    beforeEach(async(() => {
+        TestBed.configureTestingModule({
+            declarations: [ ProfileComponent ],
+            providers: [
+                {provide: AuthService, useClass: AuthServiceStub}
+            ]
+        })
+        .compileComponents();
+    }));
 
-  beforeEach(async(() => {
-    TestBed.configureTestingModule({
-      declarations: [ ProfileComponent ]
-    })
-    .compileComponents();
-  }));
+    beforeEach(() => {
+        fixture = TestBed.createComponent(ProfileComponent);
+        // this is used by ngOnInit function, so needs to provided for every test
+        component = fixture.componentInstance;
+        fixture.detectChanges();
+    });
 
-  beforeEach(() => {
-    fixture = TestBed.createComponent(ProfileComponent);
-    component = fixture.componentInstance;
-    fixture.detectChanges();
-  });
+    it('should create', () => {
+        expect(component).toBeTruthy();
+    });
 
-  it('should create', () => {
-    expect(component).toBeTruthy();
-  });
+    it('should populate user from authentication service', () => {
+        expect(component.user).toBe(testUserData.user);
+    });
 });
