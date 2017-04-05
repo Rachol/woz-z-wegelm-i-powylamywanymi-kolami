@@ -1,18 +1,13 @@
 import { Component, Directive, Input } from '@angular/core';
 import { NavigationExtras } from '@angular/router';
 
-@Directive({
-    selector: '[routerLink]',
-    host: {
-        '(click)': 'onClick()'
-    }
-})
-
+@Directive({selector: '[routerLink]'})
 export class RouterLinkStubDirective {
-    @Input('routerLink') linkParams: any;
-    navigatedTo: any = null;
-
-    onClick() {
-        this.navigatedTo = this.linkParams;
-    }
+    @Input('routerLink') params: any;
 }
+
+@Directive({selector: '[routerLinkActive]'})
+export class RouterLinkActiveStubDirective {
+    @Input('routerLinkActive') params: any;
+}
+
