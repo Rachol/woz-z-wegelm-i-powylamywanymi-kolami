@@ -32,8 +32,7 @@ describe('NavbarComponent', () => {
         TestBed.configureTestingModule({
         declarations: [
             NavbarComponent,
-            RouterLinkStubDirective,
-            RouterLinkActiveStubDirective
+            RouterLinkStubDirective
         ],
         providers: [
             {provide: AuthService, useClass: AuthServiceStub},
