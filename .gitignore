@@ -1,2 +1,7 @@
 /node_modules
 public
+/server-src/node_modules
+/server-src/src/typings
+/server-src/src/main.js
+/server-src/typings
+/server-src/dist

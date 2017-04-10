@@ -24,7 +24,7 @@ mongoose.connection.on('connected', () => {
 });
 
 // On Error
-mongoose.connection.on('error', (err) => {
+mongoose.connection.on('error', (err: any) => {
     console.log('Database error: ' + err);
 });
 
@@ -49,12 +49,12 @@ require('./config/passport')(passport);
 app.use('/users', users);
 
 // Index Route
-app.get('/', (req, res) => {
+app.get('/', (req: any, res: any) => {
     res.send('Invalid Endpoint');
 });
 
 // All Other Routes
-app.get('*', (req, res) => {
+app.get('*', (req: any, res: any) => {
     res.sendFile(path.join(__dirname, 'public/index.html'));
 });
 
