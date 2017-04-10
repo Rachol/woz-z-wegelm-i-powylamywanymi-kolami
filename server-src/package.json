@@ -2,24 +2,29 @@
   "name": "wozzweglem",
   "version": "1.0.0",
   "description": "Web Application for travellers",
-  "main": "app.js",
+  "main": "src/main.js",
+  "typings": "build",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "node app"
+    "start": "node_modules/.bin/ts-node --project src src/main.ts",
+    "run": "nodemon"
   },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/Rachol/woz-z-weglem-i-powylamywanymi-kolami.git"
   },
   "dependencies": {
-    "express":"*",
-    "mongoose":"*",
-    "bcryptjs":"*",
-    "cors":"*",
-    "jsonwebtoken":"*",
-    "body-parser":"*",
+    "bcryptjs": "*",
+    "body-parser": "*",
+    "cors": "*",
+    "express": "*",
+    "jsonwebtoken": "*",
+    "mongoose": "*",
     "passport": "*",
-    "passport-jwt": "*"
+    "passport-jwt": "*",
+    "ts-node": "^3.0.2",
+    "typescript": "^2.3.0-dev.20170407",
+    "typings": "^2.1.1"
   },
   "author": "",
   "license": "ISC",

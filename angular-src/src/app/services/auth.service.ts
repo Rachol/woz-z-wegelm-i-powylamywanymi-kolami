@@ -1,29 +1,28 @@
 import { Injectable } from '@angular/core';
 import { Http, Headers} from '@angular/http';
 import 'rxjs/add/operator/map';
-import { Observable } from 'rxjs/Observable';
 import { tokenNotExpired } from 'angular2-jwt';
 
 @Injectable()
 export class AuthService {
     authToken: string;
-    user: User;
+    user: any;
 
   constructor(private http: Http) { }
 
-    registerUser(user) {
+    registerUser(user: UserRegistrationData) {
         const headers = new Headers();
         headers.append('Content-Type', 'application/json');
         return this.http.post('http://localhost:3001/users/register', user, {headers: headers}).map(res => res.json());
     };
 
-    authenticateUser(user) {
+    authenticateUser(user: UserValidationData) {
         const headers = new Headers();
         headers.append('Content-Type', 'application/json');
         return this.http.post('http://localhost:3001/users/authenticate', user, {headers: headers}).map(res => res.json());
     };
 
-    storeUserData(token, user) {
+    storeUserData(token: string, user: any) {
         this.authToken = token;
         this.user = user;
         localStorage.setItem('id_token', token); // JWT automatically looks after id_token
@@ -54,7 +53,14 @@ export class AuthService {
     }
 }
 
-export interface User {
+export interface UserValidationData {
     username: string;
     password: string;
+}
+
+export interface UserRegistrationData {
+  name: string
+  username: string;
+  email: string;
+  password: string;
 }
