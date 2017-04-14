@@ -1,3 +1,4 @@
+
 // Import Modules
 const express = require('express');
 const path = require('path');
@@ -10,7 +11,8 @@ const mongoose = require('mongoose');
 const config = require('./config/database');
 
 //User Routes
-const users = require('./routes/users')
+import { UserService } from './routes/users';
+const users = new UserService().getRouter();
 
 // Port Numbers
 const port = 3001;
