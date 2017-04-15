@@ -34,8 +34,8 @@ const app = express();
 // CORS Middleware
 app.use(cors());
 
-// Set Static Folder ( Angulat 2 files)
-app.use(express.static(path.join(__dirname, 'public')));
+// Set Static Folder ( Angular 2 files)
+app.use(express.static(path.join(__dirname, '../../public')));
 
 // Body Parser Middleware
 app.use(bodyParser.json());
@@ -55,7 +55,7 @@ app.get('/', (req: any, res: any) => {
 
 // All Other Routes
 app.get('*', (req: any, res: any) => {
-    res.sendFile(path.join(__dirname, 'public/index.html'));
+    res.sendFile(path.join(__dirname, '../../public/index.html'));
 });
 
 // Start Server
