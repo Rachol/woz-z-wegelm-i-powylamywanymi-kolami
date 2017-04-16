@@ -7,7 +7,6 @@ import { Observable } from 'rxjs/Observable';
 import { Response } from '@angular/http';
 
 import * as Users from '../../../../server-src/src/routes/user-stub'
-import {UserRoutesStub} from "../../../../server-src/src/routes/user-stub";
 
 let service: AuthService;
 
