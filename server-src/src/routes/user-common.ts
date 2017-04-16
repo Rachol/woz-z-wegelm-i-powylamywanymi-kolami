@@ -17,7 +17,7 @@ export class UserResponseAPI {
     json(parameter: object) {}
 };
 
-export abstract class IUserService {
+export abstract class IUserRoutes {
     abstract postRegister(userData: UserRegisterData, res: UserResponseAPI): any;
     abstract postAuthenticate(userData: UserAuthenticateData, res: UserResponseAPI): any;
     abstract getProfile(res: UserResponseAPI): any;

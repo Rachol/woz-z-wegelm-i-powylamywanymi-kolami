@@ -1,5 +1,7 @@
+import { DatabaseConfig } from './config/database';
+import { PassportConfig } from './config/passport';
+import { UserRoutes } from './routes/user';
 
-// Import Modules
 const express = require('express');
 const path = require('path');
 const bodyParser = require('body-parser');
@@ -7,22 +9,15 @@ const cors = require('cors');
 const passport = require('passport');
 const mongoose = require('mongoose');
 
-// Database Configuration
-const config = require('./config/database');
-
-//User Routes
-import { UserService } from './routes/users';
-const users = new UserService().getRouter();
-
 // Port Numbers
 const port = 3001;
 
 // Connect To Database
-mongoose.connect(config.database);
+mongoose.connect(DatabaseConfig.database);
 
 // On Connection
 mongoose.connection.on('connected', () => {
-    console.log('Connected to database ' + config.database);
+    console.log('Connected to database ' + DatabaseConfig.database);
 });
 
 // On Error
@@ -45,10 +40,10 @@ app.use(bodyParser.json());
 // Passport Middleware
 app.use(passport.initialize());
 app.use(passport.session());
-require('./config/passport')(passport);
+PassportConfig.configure(passport);
 
 //Use /users for all the user routes
-app.use('/users', users);
+app.use('/users', new UserRoutes().getRouter());
 
 // Index Route
 app.get('/', (req: any, res: any) => {

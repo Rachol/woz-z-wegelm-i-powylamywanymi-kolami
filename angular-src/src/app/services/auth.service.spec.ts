@@ -6,8 +6,8 @@ import { Http } from '@angular/http';
 import { Observable } from 'rxjs/Observable';
 import { Response } from '@angular/http';
 
-import * as Users from '../../../../server-src/src/routes/users-stub'
-import {UserServiceStub} from "../../../../server-src/src/routes/users-stub";
+import * as Users from '../../../../server-src/src/routes/user-stub'
+import {UserRoutesStub} from "../../../../server-src/src/routes/user-stub";
 
 let service: AuthService;
 
@@ -42,7 +42,7 @@ describe('AuthService', () => {
     };
     service.registerUser(userData);
     // make sure that the data sent is what is expected by the server API
-    const serverStub = new Users.UserServiceStub();
+    const serverStub = new Users.UserRoutesStub();
     serverStub.postRegister(userData, new Users.UserResponseAPI())
 
     const postRegisterParameters = onPostSpy.calls.mostRecent().args;
@@ -59,7 +59,7 @@ describe('AuthService', () => {
     };
     service.authenticateUser(userData);
     // make sure that the data sent is what is expected by the server API
-    const serverStub = new Users.UserServiceStub();
+    const serverStub = new Users.UserRoutesStub();
     serverStub.postAuthenticate(userData, new Users.UserResponseAPI())
 
     const postAuthenticateParameters = onPostSpy.calls.mostRecent().args;
@@ -72,7 +72,7 @@ describe('AuthService', () => {
     const onPostSpy = spyOn(TestBed.get(Http), 'get').and.callThrough();
     service.getUserProfile();
     // make sure that the data sent is what is expected by the server API
-    const serverStub = new Users.UserServiceStub();
+    const serverStub = new Users.UserRoutesStub();
     serverStub.getProfile(new Users.UserResponseAPI())
 
     const getProfileParameters = onPostSpy.calls.mostRecent().args;

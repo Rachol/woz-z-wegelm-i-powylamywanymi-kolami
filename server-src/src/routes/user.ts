@@ -1,11 +1,11 @@
 import * as Express from 'express';
-import { IUserService, UserAuthenticateData, UserRegisterData, UserResponseAPI } from './users-common';
+import { IUserRoutes, UserAuthenticateData, UserRegisterData, UserResponseAPI } from './user-common';
+import { UserModel } from '../models/user';
+import { DatabaseConfig } from '../config/database'
 
-export class UserService extends IUserService{
+export class UserRoutes extends IUserRoutes{
     private passport = require('passport');
-    private config = require('../config/database');
     private jwt = require('jsonwebtoken');
-    private User = require('../models/user');
 
     private router: Express.Router;
 
@@ -41,8 +41,8 @@ export class UserService extends IUserService{
     }
 
     postRegister(userData: UserRegisterData, res: UserResponseAPI): any {
-        let newUser = new this.User(userData);
-        this.User.addUser(newUser, (err: any, user: any) => {
+        let newUser = UserModel.create(userData);
+        UserModel.addUser(newUser, (err: any, user: any) => {
             if(err){
                 res.json({
                     success: false,
@@ -58,7 +58,7 @@ export class UserService extends IUserService{
     }
 
     postAuthenticate(userData: UserAuthenticateData, res: UserResponseAPI): any {
-        this.User.getUserByUsername(userData.username, (err: any, user: any) => {
+        UserModel.getUserByUsername(userData.username, (err: any, user: any) => {
             if(err) throw err;
             if(!user){
                 return res.json({
@@ -67,10 +67,10 @@ export class UserService extends IUserService{
                 });
             }
 
-            this.User.comparePassword(userData.password, user.password, (err: any, isMatch: boolean) => {
+            UserModel.comparePassword(userData.password, user.password, (err: any, isMatch: boolean) => {
                 if(err) throw err;
                 if(isMatch){
-                    const token = this.jwt.sign(user, this.config.secret, {
+                    const token = this.jwt.sign(user, DatabaseConfig.secret, {
                         expiresIn: 604800 //1 week
                     });
                     res.json({
