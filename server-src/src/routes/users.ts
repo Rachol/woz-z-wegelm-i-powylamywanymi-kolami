@@ -1,31 +1,16 @@
-const passport = require('passport');
-const config = require('../config/database');
-const jwt = require('jsonwebtoken');
-const User = require('../models/user');
-
 import * as Express from 'express';
+import { IUserService, UserAuthenticateData, UserRegisterData, UserResponseAPI } from './users-common';
 
-interface UserRegisterData {
-    name: string;
-    email: string;
-    username: string;
-    password: string;
-}
-
-interface UserAuthenticateData {
-    username: string;
-    password: string;
-}
-
-class UserResponseAPI {
-    json(parameter: object) {}
-};
-
-export class UserService{
+export class UserService extends IUserService{
+    private passport = require('passport');
+    private config = require('../config/database');
+    private jwt = require('jsonwebtoken');
+    private User = require('../models/user');
 
     private router: Express.Router;
 
     constructor(){
+        super();
         this.router = Express.Router();
         this.initUserRoutes();
     }
@@ -46,7 +31,7 @@ export class UserService{
         })
 
         // Profile
-        this.router.get('/profile', passport.authenticate('jwt', {session: false}), (req: any, res: any, next: any) => {
+        this.router.get('/profile', this.passport.authenticate('jwt', {session: false}), (req: any, res: any, next: any) => {
             let retVal = this.getProfile(res);
             // This is a special case, where req is modified by passport function and the actual request does not contain
             // any parameters.
@@ -55,9 +40,9 @@ export class UserService{
         })
     }
 
-    postRegister(userData: UserRegisterData, res: UserResponseAPI) {
-        let newUser = new User(userData);
-        User.addUser(newUser, (err: any, user: any) => {
+    postRegister(userData: UserRegisterData, res: UserResponseAPI): any {
+        let newUser = new this.User(userData);
+        this.User.addUser(newUser, (err: any, user: any) => {
             if(err){
                 res.json({
                     success: false,
@@ -72,8 +57,8 @@ export class UserService{
         })
     }
 
-    postAuthenticate(userData: UserAuthenticateData, res: UserResponseAPI) {
-        User.getUserByUsername(userData.username, (err: any, user: any) => {
+    postAuthenticate(userData: UserAuthenticateData, res: UserResponseAPI): any {
+        this.User.getUserByUsername(userData.username, (err: any, user: any) => {
             if(err) throw err;
             if(!user){
                 return res.json({
@@ -82,10 +67,10 @@ export class UserService{
                 });
             }
 
-            User.comparePassword(userData.password, user.password, (err: any, isMatch: boolean) => {
+            this.User.comparePassword(userData.password, user.password, (err: any, isMatch: boolean) => {
                 if(err) throw err;
                 if(isMatch){
-                    const token = jwt.sign(user, config.secret, {
+                    const token = this.jwt.sign(user, this.config.secret, {
                         expiresIn: 604800 //1 week
                     });
                     res.json({
@@ -108,7 +93,7 @@ export class UserService{
         })
     }
 
-    getProfile(res: UserResponseAPI) {
+    getProfile(res: UserResponseAPI): any {
         return {
             user: null
         };
