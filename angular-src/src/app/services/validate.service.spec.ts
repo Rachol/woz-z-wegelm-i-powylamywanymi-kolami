@@ -28,7 +28,7 @@ describe('ValidateService', () => {
       'me@example..com',
       'me.example@com',
       'me\\@example.com'
-    ]
+    ];
 
     for (let email of invalidEmails) {
       expect(service.validateEmail(email)).toBe(false, "This e-mail shall be invalid: " + email)
@@ -46,7 +46,7 @@ describe('ValidateService', () => {
       '!#$%&\'*+-/=.?^_`{|}~@[1.0.0.127]'
       // '!#$%&\'*+-/=.?^_`{|}~@[IPv6:0123:4567:89AB:CDEF:0123:4567:89AB:CDEF]' <- does not pass current regexp
       // 'me(this is a comment)@example.com' <- does not pass current regexp
-    ]
+    ];
 
     for (let email of validEmails) {
       expect(service.validateEmail(email)).toBe(true, "This e-mail shall be valid: " + email)

@@ -1,6 +1,13 @@
 {
   "watch": [
-    "src/main.ts"
+    "src/main.ts",
+    "src/config/database.ts",
+    "src/config/passport.ts",
+    "src/modules/user.ts",
+    "src/modules/user-common.ts",
+    "src/routes/user.ts",
+    "src/routes/user-common.ts",
+    "src/routes/user-stub.ts"
   ],
   "ignore": ["src/**/*.spec.ts"],
   "exec": "ts-node --project src src/main.ts"

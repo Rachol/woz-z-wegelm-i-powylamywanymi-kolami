@@ -37,5 +37,5 @@ export function click(el: DebugElement | HTMLElement, eventObj: any = ButtonClic
    } else {
      el.triggerEventHandler('click', eventObj);
    }
-};
+}
 
