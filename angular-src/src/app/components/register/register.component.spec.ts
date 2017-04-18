@@ -4,7 +4,7 @@ import { NO_ERRORS_SCHEMA } from '@angular/core';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { By } from '@angular/platform-browser';
 import { Router } from '@angular/router';
-import { FormsModule } from '@angular/forms';
+import { ReactiveFormsModule } from '@angular/forms';
 
 import { RegisterComponent } from './register.component';
 import { AuthService } from '../../services/auth.service';
@@ -46,7 +46,7 @@ describe('RegisterComponent', () => {
       ],
       schemas: [NO_ERRORS_SCHEMA],
       imports: [
-        FormsModule
+        ReactiveFormsModule
       ]
     })
       .compileComponents();
@@ -94,10 +94,10 @@ function tests() {
       passwordInput.dispatchEvent(newEvent('input'));
       emailInput.dispatchEvent(newEvent('input'));
 
-      expect(component.name).toBe(testName);
-      expect(component.username).toBe(testUserName);
-      expect(component.password).toBe(testPassword);
-      expect(component.email).toBe(testEmail);
+      expect(component.registerForm.value.name).toBe(testName);
+      expect(component.registerForm.value.username).toBe(testUserName);
+      expect(component.registerForm.value.password).toBe(testPassword);
+      expect(component.registerForm.value.email).toBe(testEmail);
     });
   }));
 
@@ -130,8 +130,10 @@ function tests() {
 }
 
 function fillUserInfo(name:string, username: string, password: string, email: string) {
-  component.name = name;
-  component.username = username;
-  component.password = password;
-  component.email = email;
+  component.registerForm.setValue({
+    name: name,
+    username: username,
+    password: password,
+    email: email
+  });
 }

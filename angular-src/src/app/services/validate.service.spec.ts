@@ -31,7 +31,7 @@ describe('ValidateService', () => {
     ];
 
     for (let email of invalidEmails) {
-      expect(service.validateEmail(email)).toBe(false, "This e-mail shall be invalid: " + email)
+      expect(ValidateService.validateEmail(email)).toBe(false, "This e-mail shall be invalid: " + email)
     }
   });
 
@@ -49,33 +49,33 @@ describe('ValidateService', () => {
     ];
 
     for (let email of validEmails) {
-      expect(service.validateEmail(email)).toBe(true, "This e-mail shall be valid: " + email)
+      expect(ValidateService.validateEmail(email)).toBe(true, "This e-mail shall be valid: " + email)
     }
   });
 
   it('should not allow to register if name is missing', () => {
     fillUserInfo('', 'Test username', 'Test password', 'Test email');
-    expect(service.validateRegister(testUser)).toBe(false, 'Name is mandatory to register user');
+    expect(ValidateService.validateRegister(testUser)).toBe(false, 'Name is mandatory to register user');
   });
 
   it('should not allow to register if username is missing', () => {
     fillUserInfo('Test name', '', 'Test password', 'Test email');
-    expect(service.validateRegister(testUser)).toBe(false, 'Username is mandatory to register user');
+    expect(ValidateService.validateRegister(testUser)).toBe(false, 'Username is mandatory to register user');
   });
 
   it('should not allow to register if password is missing', () => {
     fillUserInfo('Test name', 'Test username', '', 'Test email');
-    expect(service.validateRegister(testUser)).toBe(false, 'Password is mandatory to register user');
+    expect(ValidateService.validateRegister(testUser)).toBe(false, 'Password is mandatory to register user');
   });
 
   it('should not allow to register if email is missing', () => {
     fillUserInfo('Test name', 'Test username', 'Test password', '');
-    expect(service.validateRegister(testUser)).toBe(false, 'Email is mandatory to register user');
+    expect(ValidateService.validateRegister(testUser)).toBe(false, 'Email is mandatory to register user');
   });
 
   it('should allow to register if all the fields are provided', () => {
     fillUserInfo('Test name', 'Test username', 'Test password', 'Test email');
-    expect(service.validateRegister(testUser)).toBe(true, 'Allow registration if all mandatory fields are provided');
+    expect(ValidateService.validateRegister(testUser)).toBe(true, 'Allow registration if all mandatory fields are provided');
   });
 
 });
