@@ -38,6 +38,11 @@ export class UserRoutes extends IUserRoutes{
             retVal.user = req.user;
             res.json(retVal);
         })
+
+        // User exists
+        this.router.get('/exists', (req: any, res: any, next: any) => {
+            this.getExists(req.query, res);
+        })
     }
 
     postRegister(userData: UserRegisterData, res: UserResponseAPI): any {
@@ -97,5 +102,14 @@ export class UserRoutes extends IUserRoutes{
         return {
             user: null
         };
+    }
+
+    getExists(params: {username: string}, res: UserResponseAPI): any {
+        console.log("Params: ", params)
+        UserModel.isUserNameRegistered(params.username, (isRegistered) => {
+            res.json({
+                exists: isRegistered
+            })
+        })
     }
 }

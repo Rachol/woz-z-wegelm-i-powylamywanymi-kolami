@@ -33,8 +33,11 @@ export class AuthService {
         const headers = new Headers();
         this.loadToken();
         headers.append('Authorization', this.authToken);
-        headers.append('Content-Type', 'application/json');
         return this.http.get('http://localhost:3001/users/profile', {headers: headers}).map(res => res.json());
+    }
+
+    isUsernameRegistered(username: string) {
+        return this.http.get('http://localhost:3001/users/exists?username='+username).map(res => res.json());
     }
 
     loadToken() {

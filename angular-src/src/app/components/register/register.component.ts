@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { ValidateService, emailFormatValidator } from '../../services/validate.service';
+import { ValidateService } from '../../services/validate.service';
 import { AuthService } from '../../services/auth.service';
 import { FlashMessagesService } from 'angular2-flash-messages';
 import { Router } from '@angular/router';
@@ -27,6 +27,7 @@ export class RegisterComponent {
       },
       'username': {
         'required': 'Username is required',
+        'userRegistered': 'Username already registered',
         'minlength': 'Name must be at least 4 characters long',
         'maxlength': 'Name cannot be more than 24 characters long'
       },
@@ -44,23 +45,24 @@ export class RegisterComponent {
   constructor(private authService: AuthService,
               private flashMessagesService: FlashMessagesService,
               private router: Router,
-              private formBuilder: FormBuilder) {
+              private formBuilder: FormBuilder,
+              private validateService: ValidateService) { //needs to be instantiated for ValidateService validators to work
       this.createForm();
   }
 
   createForm() {
       this.registerForm = this.formBuilder.group({
           name:     ['', [Validators.required, Validators.minLength(4), Validators.maxLength(24)] ],
-          username: ['', [Validators.required, Validators.minLength(4), Validators.maxLength(24)] ],
-          email:    ['', [Validators.required, emailFormatValidator()] ],
+          username: ['', [Validators.required, Validators.minLength(4), Validators.maxLength(24)], [ValidateService.isUsernameRegisteredValidator] ],
+          email:    ['', [Validators.required, ValidateService.emailFormatValidator] ],
           password: ['', [Validators.required, Validators.minLength(4), Validators.maxLength(24)] ]
       });
 
-      this.registerForm.valueChanges.subscribe((data) => this.onValueChanged(data));
-      this.onValueChanged(null);
+      this.registerForm.statusChanges.subscribe((data) => this.onStatusChanged());
+      this.onStatusChanged();
   }
 
-  onValueChanged(data: any) {
+  onStatusChanged() {
       if (!this.registerForm) { return; }
 
       for(const field in this.formErrors){

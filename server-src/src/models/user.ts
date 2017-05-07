@@ -1,4 +1,5 @@
 import { UserData, UserSchema } from './user-common'
+import {isUndefined} from "util";
 
 function initModel() {
     const mongoose = require('mongoose');
@@ -39,4 +40,15 @@ export class UserModel {
         })
     };
 
+    static isUserNameRegistered(username: string, callback:(isRegistered: boolean) => void){
+        const query = {username: username};
+        UserModel.model.findOne(query, (err: any, user: any) => {
+            if (err) throw err;
+            if(user){
+                callback(true);
+            }else{
+                callback(false);
+            }
+        });
+    }
 }

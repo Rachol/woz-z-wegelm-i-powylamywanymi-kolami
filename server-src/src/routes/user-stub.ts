@@ -9,4 +9,5 @@ export class UserRoutesStub extends IUserRoutes{
     postRegister(userData: UserRegisterData, res: UserResponseAPI): any {}
     postAuthenticate(userData: UserAuthenticateData, res: UserResponseAPI): any {}
     getProfile(res: UserResponseAPI): any {}
+    getExists(params: {username: string}, res: UserResponseAPI): any {}
 }

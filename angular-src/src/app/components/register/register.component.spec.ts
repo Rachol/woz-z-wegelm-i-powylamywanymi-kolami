@@ -21,10 +21,6 @@ class AuthServiceStub {
   registerUser() { };
 }
 
-class ValidateServiceStub {
-  validateRegister() { };
-}
-
 class RouterStub {
   navigate() { };
 }
