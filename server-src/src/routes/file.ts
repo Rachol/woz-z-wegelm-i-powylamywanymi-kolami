@@ -1,13 +1,13 @@
 import * as Express from 'express';
 import { UserModel } from '../models/user';
 let fs = require('fs');
+let path = require('path');
 
 const DIR = '../../uploads/';
-
+const FINAL_DIR = path.join(__dirname, DIR);
 
 export class FileRoutes {
     private multer = require('multer');
-    private path = require('path');
 
     private upload: any
 
@@ -15,7 +15,6 @@ export class FileRoutes {
 
     constructor(){
         this.router = Express.Router();
-        const FINAL_DIR = this.path.join(__dirname, DIR);
 
         let storage = this.multer.diskStorage({
             destination: function (req: any, file: any, cb: any) {
@@ -76,10 +75,14 @@ export class FileRoutes {
                 let scripts: any;
                 scripts = [];
                 let replaced = false;
+                let fileToRemove = "";
                 for (let entry of user.scripts) {
                     if(!replaced && entry.name == req.body.scriptName) {
                         scripts.push(newScript)
                         replaced = true;
+                        if(entry.name != req.body.finalName) {
+                            fileToRemove = entry.name;
+                        }
                     }else{
                         scripts.push(entry)
                     }
@@ -88,8 +91,13 @@ export class FileRoutes {
                     scripts.push(newScript)
                     let limit = user.scriptsLimit ? user.scriptsLimit : 3
                     if(scripts.length > limit){
+                        fileToRemove = scripts[0].name;
                         scripts = scripts.slice(1);
                     }
+                }
+
+                if(fileToRemove != ""){
+                    fs.unlink(path.join(FINAL_DIR + req.body.username, fileToRemove));
                 }
 
                 UserModel.updateUserScripts(req.body.username, scripts, null);
