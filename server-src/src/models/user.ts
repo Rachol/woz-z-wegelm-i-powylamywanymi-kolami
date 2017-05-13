@@ -1,7 +1,39 @@
-import { UserData, UserSchema } from './user-common'
+import { UserData } from './user-common'
+
+
 
 function initModel() {
     const mongoose = require('mongoose');
+
+    //User Schema
+    const UserSchema = {
+        name: {
+            type: String
+        },
+        email: {
+            type: String,
+            required: true
+        },
+        username: {
+            type: String,
+            required: true
+        },
+        password: {
+            type: String,
+            required: true
+        },
+        scripts: [{
+            name: String,
+            uploadDate: Number,
+            results: []
+        }],
+        scriptsLimit: {
+            type: Number,
+            required: true,
+            default: 3
+        }
+    };
+
     return mongoose.model('User', mongoose.Schema(UserSchema));
 }
 
@@ -38,5 +70,12 @@ export class UserModel {
             callback(null, isMatch);
         })
     };
+
+    static updateUserScripts(username: string, scripts: any, callback: any){
+        var query = {'username': username};
+        UserModel.model.findOneAndUpdate(query, {scripts: scripts}, {upsert:true}, function(err: any, doc: any){
+            if (err) return console.log("ERROR");
+        });
+    }
 
 }

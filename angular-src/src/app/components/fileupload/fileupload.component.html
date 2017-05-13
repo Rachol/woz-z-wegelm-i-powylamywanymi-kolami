@@ -1,0 +1,46 @@
+<div class="container">
+  <div class="navbar navbar-default">
+    <div class="navbar-header">
+      <a class="navbar-brand" href>Uploaded script files</a>
+    </div>
+  </div>
+
+  <table class="table">
+    <thead>
+    <tr>
+      <th>Name</th>
+      <th>Games played</th>
+      <th>Games won</th>
+      <th>Upload date</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr *ngFor="let script of userTableData, let i = index">
+      <td>{{script.name}}</td>
+      <td>{{script.games}}</td>
+      <td>{{script.wins}}</td>
+      <td>{{script.date}}</td>
+      <td>
+        <label class="btn btn-success btn-file btn-xs">
+          <span class="glyphicon glyphicon-upload"></span>
+          <input type="file" style="display: none;" (change)="updateScript($event, i)">
+          Update file
+        </label>
+      </td>
+    </tr>
+    </tbody>
+  </table>
+
+  <div class="row" class="pull-right">
+    <label class="btn btn-success btn-s">
+      <span class="glyphicon glyphicon-upload"></span>
+      <input type="file" style="display: none;" (change)="updateScript($event)">
+      Upload new
+    </label>
+    <button type="button" class="btn btn-warning btn-s"
+            (click)="refreshData()">
+      <span class="glyphicon glyphicon-ban-circle"></span> Refresh
+    </button>
+  </div>
+
+</div>

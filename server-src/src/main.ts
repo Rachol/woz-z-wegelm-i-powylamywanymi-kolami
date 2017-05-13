@@ -1,6 +1,7 @@
 import { DatabaseConfig } from './config/database';
 import { PassportConfig } from './config/passport';
 import { UserRoutes } from './routes/user';
+import {FileRoutes} from "./routes/file";
 
 const express = require('express');
 const path = require('path');
@@ -28,8 +29,22 @@ mongoose.connection.on('error', (err: any) => {
 //Initialize Express app
 const app = express();
 
+app.use(function (req: any, res: any, next: any) {
+    res.setHeader('Access-Control-Allow-Origin', 'http://localhost:4200');
+    res.setHeader('Access-Control-Allow-Methods', 'POST');
+    res.setHeader('Access-Control-Allow-Headers', 'X-Requested-With,content-type');
+    res.setHeader('Access-Control-Allow-Credentials', true);
+    next();
+});
+
+var corsOptions = {
+    origin: 'http://localhost:4200',
+    optionsSuccessStatus: 200 // some legacy browsers (IE11, various SmartTVs) choke on 204
+}
+
 // CORS Middleware
-app.use(cors());
+app.use(cors(corsOptions));
+
 
 // Set Static Folder ( Angular 2 files)
 app.use(express.static(path.join(__dirname, '../../public')));
@@ -44,6 +59,7 @@ PassportConfig.configure(passport);
 
 //Use /users for all the user routes
 app.use('/users', new UserRoutes().getRouter());
+app.use('/files', new FileRoutes().getRouter());
 
 // Index Route
 app.get('/', (req: any, res: any) => {

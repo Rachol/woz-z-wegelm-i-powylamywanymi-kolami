@@ -16,13 +16,17 @@ import { ProfileComponent } from './components/profile/profile.component';
 import { ValidateService } from './services/validate.service';
 import { AuthService } from './services/auth.service';
 import { AuthGuard } from './guards/auth.guard';
+import { FileuploadComponent } from './components/fileupload/fileupload.component';
+
+import { FileUploadModule } from 'ng2-file-upload';
 
 const appRoutes: Routes = [
     {path: '', component: HomeComponent},
     {path: 'register', component: RegisterComponent},
     {path: 'login', component: LoginComponent},
     {path: 'dashboard', component: DashboardComponent, canActivate: [AuthGuard]},
-    {path: 'profile', component: ProfileComponent, canActivate: [AuthGuard]}
+    {path: 'profile', component: ProfileComponent, canActivate: [AuthGuard]},
+    {path: 'fileupload', component: FileuploadComponent, canActivate: [AuthGuard]}
 ];
 
 @NgModule({
@@ -33,14 +37,16 @@ const appRoutes: Routes = [
     RegisterComponent,
     HomeComponent,
     DashboardComponent,
-    ProfileComponent
+    ProfileComponent,
+    FileuploadComponent
   ],
   imports: [
     BrowserModule,
     FormsModule,
     HttpModule,
     RouterModule.forRoot(appRoutes),
-    FlashMessagesModule
+    FlashMessagesModule,
+    FileUploadModule
   ],
   providers: [
       ValidateService,

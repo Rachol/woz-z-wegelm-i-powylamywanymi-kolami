@@ -29,6 +29,13 @@ export class UserRoutes extends IUserRoutes{
         this.router.post('/authenticate', (req: any, res: any, next: any) => {
             this.postAuthenticate(req.body, res);
         })
+        //Update
+        this.router.post('/update', (req: any, res: any, next: any) => {
+            // This is a special case, where req is modified by passport function and the actual request does not contain
+            // any parameters.
+            console.log("Am I even here lul?");
+            this.postUpdate(req.body, res);
+        })
 
         // Profile
         this.router.get('/profile', this.passport.authenticate('jwt', {session: false}), (req: any, res: any, next: any) => {
@@ -38,6 +45,7 @@ export class UserRoutes extends IUserRoutes{
             retVal.user = req.user;
             res.json(retVal);
         })
+
     }
 
     postRegister(userData: UserRegisterData, res: UserResponseAPI): any {
@@ -90,6 +98,20 @@ export class UserRoutes extends IUserRoutes{
                     });
                 }
             })
+        })
+    }
+
+    postUpdate(userData: any, res: UserResponseAPI): any {
+        UserModel.getUserByUsername(userData.username, (err: any, user: any) => {
+            if(err) throw err;
+            if(!user){
+                return res.json({
+                    success: false,
+                    msg: 'User not found'
+                });
+            }
+
+            UserModel.updateUserScripts(userData.username, userData.scripts, null);
         })
     }
 

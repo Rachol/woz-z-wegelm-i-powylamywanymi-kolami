@@ -20,6 +20,7 @@
     "express": "*",
     "jsonwebtoken": "*",
     "mongoose": "*",
+    "multer": "^1.3.0",
     "passport": "*",
     "passport-jwt": "*",
     "ts-node": "^3.0.2",
