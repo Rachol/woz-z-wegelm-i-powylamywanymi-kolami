@@ -1,2 +1,34 @@
-<h2>Dashboard</h2>
-<p>Welcome to dashboard</p>
+<div class="container">
+  <div class="navbar navbar-default">
+    <div class="navbar-header">
+      <a class="navbar-brand" href>Ranking</a>
+    </div>
+  </div>
+
+  <table class="table">
+    <thead>
+    <tr>
+      <th>Name</th>
+      <th>Games played</th>
+      <th>Games won</th>
+      <th>Win ratio</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr *ngFor="let script of scriptsData, let i = index">
+      <td>{{script.script}}</td>
+      <td>{{script.games}}</td>
+      <td>{{script.wins}}</td>
+      <td>{{(script.wins / script.games).toFixed(2)}}</td>
+    </tr>
+    </tbody>
+  </table>
+
+  <div class="row" class="pull-right">
+    <button type="button" class="btn btn-warning btn-s"
+            (click)="refreshData()">
+      <span class="glyphicon glyphicon-ban-circle"></span> Refresh
+    </button>
+  </div>
+
+</div>

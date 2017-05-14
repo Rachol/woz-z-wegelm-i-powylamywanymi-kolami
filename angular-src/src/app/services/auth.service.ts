@@ -78,7 +78,8 @@ export interface UpdateUserData {
   scripts: [{
     name: string,
     uploadDate: number,
-    results: number[]
+    wins: number,
+    games: number
   }]
 }
 

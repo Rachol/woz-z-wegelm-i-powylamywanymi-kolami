@@ -6,6 +6,35 @@ let path = require('path');
 const DIR = '../../uploads/';
 const FINAL_DIR = path.join(__dirname, DIR);
 
+const sqlite3 = require('sqlite3').verbose();
+
+const DB_PATH = "E:/Programming/BattleIsland/storage/Databases/96529230ba69f6ed1ef0770a494441cd.sqlite"
+
+function clearScriptData (username: string, scriptName:string) {
+    var db = new sqlite3.Database(DB_PATH);
+
+    let script = username + "/" + scriptName;
+    if (script.startsWith("/")) {
+        script = script.slice(1);
+    }
+
+    db.run("DELETE FROM Results WHERE script=?", script);
+
+    db.close();
+}
+
+
+
+function getAllData (callback: any) {
+    var db = new sqlite3.Database(DB_PATH);
+
+    db.all("SELECT * FROM Results", function(err: any, rows: any) {
+        callback(rows)
+    });
+
+    db.close();
+}
+
 export class FileRoutes {
     private multer = require('multer');
 
@@ -48,7 +77,20 @@ export class FileRoutes {
         this.router.post('/upload', (req: any, res: any, next: any) => {
             this.postUpload(req, res);
         })
+        // Upload
+        this.router.get('/stats', (req: any, res: any, next: any) => {
+            // This is a special case, where req is modified by passport function and the actual request does not contain
+            // any parameters.
+            this.getStats(res);
+        })
     }
+
+    getStats(res: any): any {
+        getAllData((data: any) => {
+            res.json(data);
+        })
+    }
+
 
     postUpload(req: any, res: any): any {
         this.upload(req, res, function (err: any) {
@@ -69,7 +111,8 @@ export class FileRoutes {
                 let newScript = {
                     'name': req.body.finalName,
                     'uploadDate': req.body.uploadTime,
-                    'results': []
+                    'games': 0,
+                    'wins': 0
                 }
 
                 let scripts: any;
@@ -99,6 +142,9 @@ export class FileRoutes {
                 if(fileToRemove != ""){
                     fs.unlink(path.join(FINAL_DIR + req.body.username, fileToRemove));
                 }
+
+                //remove entry from sql database
+                clearScriptData(req.body.username, fileToRemove);
 
                 UserModel.updateUserScripts(req.body.username, scripts, null);
             })

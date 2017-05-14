@@ -25,6 +25,7 @@ export class FileuploadComponent implements OnInit {
 
   private userData: UpdateUserData;
   private userTableData: ScriptData[];
+  private allowAdd = true;
 
   constructor(private authService: AuthService) {
     this.refreshData();
@@ -57,17 +58,21 @@ export class FileuploadComponent implements OnInit {
     this.authService.getUserProfile().subscribe(profile => {
         this.userData = profile.user;
         this.userTableData = [];
+        let newUserTableData: any[];
+        newUserTableData = [];
         for (let entry of this.userData.scripts) {
           let uploadDate = new Date(entry.uploadDate);
-          this.userTableData.push(
+          newUserTableData.push(
             {
               name: entry.name,
-              games: entry.results.length,
-              wins: entry.results.reduce(function (a, b) { return a + b; }, 0),
+              games: entry.games,
+              wins: entry.wins,
               date: uploadDate.toLocaleTimeString() + ", " + uploadDate.toLocaleDateString()
             }
           )
         }
+        this.userTableData = newUserTableData;
+        this.allowAdd = this.userTableData.length < 3 ? true : false;
       },
       err => {
         console.log(err);

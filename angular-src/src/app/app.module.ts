@@ -19,6 +19,7 @@ import { AuthGuard } from './guards/auth.guard';
 import { FileuploadComponent } from './components/fileupload/fileupload.component';
 
 import { FileUploadModule } from 'ng2-file-upload';
+import {ScriptService} from "./services/script.service";
 
 const appRoutes: Routes = [
     {path: '', component: HomeComponent},
@@ -51,6 +52,7 @@ const appRoutes: Routes = [
   providers: [
       ValidateService,
       AuthService,
+      ScriptService,
       AuthGuard
   ],
   bootstrap: [ AppComponent ]

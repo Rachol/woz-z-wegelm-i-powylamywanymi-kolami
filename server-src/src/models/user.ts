@@ -25,7 +25,8 @@ function initModel() {
         scripts: [{
             name: String,
             uploadDate: Number,
-            results: []
+            games: Number,
+            wins: Number
         }],
         scriptsLimit: {
             type: Number,

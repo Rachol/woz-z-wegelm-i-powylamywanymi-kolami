@@ -33,7 +33,6 @@ export class UserRoutes extends IUserRoutes{
         this.router.post('/update', (req: any, res: any, next: any) => {
             // This is a special case, where req is modified by passport function and the actual request does not contain
             // any parameters.
-            console.log("Am I even here lul?");
             this.postUpdate(req.body, res);
         })
 

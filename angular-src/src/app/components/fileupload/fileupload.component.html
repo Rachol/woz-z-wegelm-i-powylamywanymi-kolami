@@ -1,7 +1,7 @@
 <div class="container">
   <div class="navbar navbar-default">
     <div class="navbar-header">
-      <a class="navbar-brand" href>Uploaded script files</a>
+      <a class="navbar-brand" href>Uploaded script files (max 3 allowed)</a>
     </div>
   </div>
 
@@ -11,6 +11,7 @@
       <th>Name</th>
       <th>Games played</th>
       <th>Games won</th>
+      <th>Win ratio</th>
       <th>Upload date</th>
     </tr>
     </thead>
@@ -19,6 +20,7 @@
       <td>{{script.name}}</td>
       <td>{{script.games}}</td>
       <td>{{script.wins}}</td>
+      <td>{{(script.wins / script.games).toFixed(2)}}</td>
       <td>{{script.date}}</td>
       <td>
         <label class="btn btn-success btn-file btn-xs">
@@ -32,7 +34,7 @@
   </table>
 
   <div class="row" class="pull-right">
-    <label class="btn btn-success btn-s">
+    <label *ngIf="allowAdd" class="btn btn-success btn-s">
       <span class="glyphicon glyphicon-upload"></span>
       <input type="file" style="display: none;" (change)="updateScript($event)">
       Upload new
