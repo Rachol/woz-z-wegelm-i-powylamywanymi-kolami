@@ -45,16 +45,20 @@ export class PassportConfig {
                 }
 
                 if (user) {
-                    for(let i = 0; i < user.scripts.length; i++) {
-                        updateScriptData(user.username, user.scripts[i].name, (scriptData: any) => {
-                            user.scripts[i].games = scriptData.games;
-                            user.scripts[i].wins = scriptData.wins;
-                            if(i == user.scripts.length - 1){
-                                UserModel.updateUserScripts(user.username, user.scripts, null);
-                                return done(null, user);
-                            }
-                        });
+                    if(user.scripts.length > 0 ){
+                        for(let i = 0; i < user.scripts.length; i++) {
+                            updateScriptData(user.username, user.scripts[i].name, (scriptData: any) => {
+                                user.scripts[i].games = scriptData.games;
+                                user.scripts[i].wins = scriptData.wins;
+                                if(i == user.scripts.length - 1){
+                                    UserModel.updateUserScripts(user.username, user.scripts, null);
+                                    return done(null, user);
+                                }
+                            });
 
+                        }
+                    } else {
+                        return done(null, user);
                     }
 
                 } else {

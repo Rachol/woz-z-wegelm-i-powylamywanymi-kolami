@@ -37,6 +37,8 @@ function getAllData (callback: any) {
 
 export class FileRoutes {
     private multer = require('multer');
+    private passport = require('passport');
+    private jwt = require('jsonwebtoken');
 
     private upload: any
 
@@ -48,7 +50,7 @@ export class FileRoutes {
         let storage = this.multer.diskStorage({
             destination: function (req: any, file: any, cb: any) {
 
-                const folderName = FINAL_DIR + req.body.username;
+                const folderName = FINAL_DIR + req.user.username;
                 if (!fs.existsSync(folderName)){
                     fs.mkdirSync(folderName);
                 }
@@ -74,13 +76,15 @@ export class FileRoutes {
 
     initFileRoutes() {
         // Upload
-        this.router.post('/upload', (req: any, res: any, next: any) => {
+        this.router.post('/upload', this.passport.authenticate('jwt', {session: false}), (req: any, res: any, next: any) => {
+            console.log("cry not")
             this.postUpload(req, res);
         })
         // Upload
         this.router.get('/stats', (req: any, res: any, next: any) => {
             // This is a special case, where req is modified by passport function and the actual request does not contain
             // any parameters.
+            console.log("cry")
             this.getStats(res);
         })
     }
@@ -93,61 +97,59 @@ export class FileRoutes {
 
 
     postUpload(req: any, res: any): any {
+        let user = req.user
+        if (!user || !user.username) {
+            return res.json({
+                success: false,
+                msg: 'User not found'
+            });
+        }
         this.upload(req, res, function (err: any) {
             if (err) {
                 return res.json(err.toString());
             }
             //file has been uploaded, time to update the data
-            UserModel.getUserByUsername(req.body.username, (err: any, user: any) => {
-                if(err) throw err;
-                if(!user){
-                    return res.json({
-                        success: false,
-                        msg: 'User not found'
-                    });
-                }
+            //check if the file already existed for this user
+            let newScript = {
+                'name': req.body.finalName,
+                'uploadDate': req.body.uploadTime,
+                'games': 0,
+                'wins': 0
+            }
 
-                //check if the file already existed for this user
-                let newScript = {
-                    'name': req.body.finalName,
-                    'uploadDate': req.body.uploadTime,
-                    'games': 0,
-                    'wins': 0
-                }
-
-                let scripts: any;
-                scripts = [];
-                let replaced = false;
-                let fileToRemove = "";
-                for (let entry of user.scripts) {
-                    if(!replaced && entry.name == req.body.scriptName) {
-                        scripts.push(newScript)
-                        replaced = true;
-                        if(entry.name != req.body.finalName) {
-                            fileToRemove = entry.name;
-                        }
-                    }else{
-                        scripts.push(entry)
-                    }
-                }
-                if(!replaced){
+            let scripts: any;
+            scripts = [];
+            let replaced = false;
+            let fileToRemove = "";
+            for (let entry of user.scripts) {
+                if (!replaced && entry.name == req.body.scriptName) {
                     scripts.push(newScript)
-                    let limit = user.scriptsLimit ? user.scriptsLimit : 3
-                    if(scripts.length > limit){
-                        fileToRemove = scripts[0].name;
-                        scripts = scripts.slice(1);
+                    replaced = true;
+                    if (entry.name != req.body.finalName) {
+                        fileToRemove = entry.name;
                     }
+                } else {
+                    scripts.push(entry)
                 }
-
-                if(fileToRemove != ""){
-                    fs.unlink(path.join(FINAL_DIR + req.body.username, fileToRemove));
+            }
+            if (!replaced) {
+                scripts.push(newScript)
+                let limit = user.scriptsLimit ? user.scriptsLimit : 3
+                if (scripts.length > limit) {
+                    fileToRemove = scripts[0].name;
+                    scripts = scripts.slice(1);
                 }
+            }
 
-                //remove entry from sql database
-                clearScriptData(req.body.username, fileToRemove);
+            let pathToRemove = path.join(FINAL_DIR + user.username, fileToRemove);
+            if (fileToRemove != "" && fs.existsSync(pathToRemove)) {
+                fs.unlink(pathToRemove);
+            }
 
-                UserModel.updateUserScripts(req.body.username, scripts, null);
-            })
+            //remove entry from sql database
+            clearScriptData(user.username, fileToRemove);
+
+            UserModel.updateUserScripts(user.username, scripts, null);
             res.end('File is uploaded');
         });
     }
