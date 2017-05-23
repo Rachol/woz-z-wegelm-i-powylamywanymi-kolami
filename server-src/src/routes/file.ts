@@ -3,8 +3,11 @@ import { UserModel } from '../models/user';
 let fs = require('fs');
 let path = require('path');
 
-const DIR = '../../../../uploads/';
-const FINAL_DIR = path.join(__dirname, DIR);
+const UPLOADS_DIR = '../../../../uploads/';
+const UPLOADS_FINAL_DIR = path.join(__dirname, UPLOADS_DIR);
+
+const EDITORS_DIR = '../../../../editors/';
+const EDITORS_FINAL_DIR = path.join(__dirname, EDITORS_DIR);
 
 const sqlite3 = require('sqlite3').verbose();
 
@@ -24,7 +27,6 @@ function clearScriptData (username: string, scriptName:string) {
 }
 
 
-
 function getAllData (callback: any) {
     var db = new sqlite3.Database(DB_PATH);
 
@@ -33,6 +35,42 @@ function getAllData (callback: any) {
     });
 
     db.close();
+}
+
+function readEditor (username: string, callback: any) {
+    let filePath =  path.join(EDITORS_FINAL_DIR, username + "/editor.js");
+    console.log(filePath);
+    fs.exists(filePath, (exists: boolean) => {
+        if(!exists){
+            callback(null);
+        }else{
+            fs.readFile(filePath, (err:any, data:any) => {
+                if (err) {
+                    callback(null);
+                } else {
+                    callback(data);
+                }
+            });
+        }
+    });
+
+}
+
+function saveEditor (username: string, data: any, callback: any) {
+    let folderPath = path.join(EDITORS_FINAL_DIR, username);
+    if (!fs.existsSync(folderPath)){
+        fs.mkdirSync(folderPath);
+    }
+
+    let filePath =  path.join(folderPath, "editor.js");
+    fs.writeFile(filePath, data, function(err: any) {
+        if(err) {
+            callback(false);
+            return console.log(err);
+        } else{
+            callback(true);
+        }
+    });
 }
 
 export class FileRoutes {
@@ -50,7 +88,7 @@ export class FileRoutes {
         let storage = this.multer.diskStorage({
             destination: function (req: any, file: any, cb: any) {
 
-                const folderName = FINAL_DIR + req.user.username;
+                const folderName = UPLOADS_FINAL_DIR + req.user.username;
                 if (!fs.existsSync(folderName)){
                     fs.mkdirSync(folderName);
                 }
@@ -87,11 +125,41 @@ export class FileRoutes {
             console.log("cry")
             this.getStats(res);
         })
+
+        // Get Editor data
+        this.router.get('/editor', this.passport.authenticate('jwt', {session: false}), (req: any, res: any, next: any) => {
+            // This is a special case, where req is modified by passport function and the actual request does not contain
+            // any parameters.
+            console.log("getEditor")
+            this.getEditor(req, res);
+        })
+
+        // Save editor data
+        this.router.post('/editor', this.passport.authenticate('jwt', {session: false}), (req: any, res: any, next: any) => {
+            // This is a special case, where req is modified by passport function and the actual request does not contain
+            // any parameters.
+            console.log("postEditor")
+            this.postEditor(req, res);
+        })
     }
 
     getStats(res: any): any {
         getAllData((data: any) => {
             res.json(data);
+        })
+    }
+
+    getEditor(req: any,res: any): any {
+        readEditor(req.user.username, (data: any) => {
+            res.json({
+                editor: data.toString("utf-8")
+            });
+        })
+    }
+
+    postEditor(req: any, res: any): any {
+        saveEditor(req.user.username, req.body.data, (success: boolean) => {
+            res.json(success);
         })
     }
 
@@ -141,7 +209,7 @@ export class FileRoutes {
                 }
             }
 
-            let pathToRemove = path.join(FINAL_DIR + user.username, fileToRemove);
+            let pathToRemove = path.join(UPLOADS_FINAL_DIR + user.username, fileToRemove);
             if (fileToRemove != "" && fs.existsSync(pathToRemove)) {
                 fs.unlink(pathToRemove);
             }

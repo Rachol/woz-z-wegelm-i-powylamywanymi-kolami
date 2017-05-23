@@ -1,4 +1,5 @@
 import { Component, OnInit, ViewChild, ElementRef } from '@angular/core';
+import { ScriptService } from '../../services/script.service';
 
 import 'brace/theme/twilight';
 import 'brace/mode/javascript';
@@ -12,17 +13,24 @@ declare var ace: any;
 })
 export class EditorComponent implements OnInit {
   editor: any;
-  text:string = "";
-  aceOptions:any = {maxLines: 1000, printMargin: false};
+  // aceOptions: any = {maxLines: 1000, printMargin: false};
 
-  constructor(elementRef: ElementRef) {
-    let el = elementRef.nativeElement;
-    this.editor = ace["edit"](el);
-    let me = this;
-    let editor = this.editor;
+  constructor(elementRef: ElementRef,
+              private scriptService: ScriptService) {
+
+    const el = elementRef.nativeElement;
+    this.editor = ace['edit'](el);
+    // this.editor.setOptions(this.aceOptions);
+    const me = this;
+    const editor = this.editor;
     editor.setTheme('ace/theme/twilight');
     editor.getSession().setMode('ace/mode/javascript');
     editor.setReadOnly(false);
+
+    this.scriptService.getEditorContent().subscribe( data => {
+      editor.setValue(data.editor);
+    });
+/*
     editor.setValue(
 `
 function executeEvents() {
@@ -30,24 +38,24 @@ function executeEvents() {
 		robot.shoot();
 	}
     else{
-        robot.turnClockwise(7.0); 
+        robot.turnClockwise(7.0);
     }
 }`
     );
-    //editor.getSession().on('change', function(e) {
-    //  me.onChange(e);
-    //});
+ */
+    // editor.getSession().on('change', function(e) {
+    // me.onChange(e);
+    // });
 
     editor.commands.addCommand({
       name: 'myCommand',
       bindKey: {win: 'Ctrl-S',  mac: 'Command-S'},
-      exec: function(editor) {
+      exec: function(edit) {
         try{
-          me.evaluate(editor.getValue());
-          me.onChange(editor)
+          me.evaluate(edit.getValue());
+          me.onChange(edit);
         }catch(err){
-          //do nothing, just want to check if the thing compiles
-          let error = err.toString();
+          // do nothing, just want to check if the thing compiles
           console.log(err.stack);
         }
       },
@@ -59,20 +67,15 @@ function executeEvents() {
   ngOnInit() {
   }
 
-  ngAfterViewInit() {
-  }
-
   onChange(code) {
-    console.log(this.editor.getValue());
+    const editorData = this.editor.getValue();
+    // here we can start saving shit...
+    console.log(editorData);
+    this.scriptService.saveEditorContent(editorData).subscribe();
   }
 
   private evaluate(str: string) {
-  var context =
-    `
-    console.log("maybe now");
-    
-    `;
-    return eval(`(function(console) {${context}${str}})`)(console);
+    return eval(`(function(console) {${str}})`)(console);
   }
 }
 

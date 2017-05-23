@@ -47,6 +47,7 @@ export class AuthService {
   }
 
   getToken() {
+    this.loadToken();
     return this.authToken;
   }
 

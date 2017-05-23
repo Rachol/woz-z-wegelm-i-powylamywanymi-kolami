@@ -21,6 +21,7 @@ import { FileuploadComponent } from './components/fileupload/fileupload.componen
 import { FileUploadModule } from 'ng2-file-upload';
 import {ScriptService} from "./services/script.service";
 import { EditorComponent } from './components/editor/editor.component';
+import { EditorviewComponent } from './components/editorview/editorview.component';
 
 
 const appRoutes: Routes = [
@@ -30,7 +31,7 @@ const appRoutes: Routes = [
     {path: 'dashboard', component: DashboardComponent, canActivate: [AuthGuard]},
     {path: 'profile', component: ProfileComponent, canActivate: [AuthGuard]},
     {path: 'fileupload', component: FileuploadComponent, canActivate: [AuthGuard]},
-    {path: 'editor', component: EditorComponent}
+    {path: 'editor', component: EditorviewComponent, canActivate: [AuthGuard]}
 ];
 
 @NgModule({
@@ -43,7 +44,8 @@ const appRoutes: Routes = [
     DashboardComponent,
     ProfileComponent,
     FileuploadComponent,
-    EditorComponent
+    EditorComponent,
+    EditorviewComponent
   ],
   imports: [
     BrowserModule,
