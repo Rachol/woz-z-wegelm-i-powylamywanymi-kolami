@@ -2,6 +2,7 @@ import { DatabaseConfig } from './config/database';
 import { PassportConfig } from './config/passport';
 import { UserRoutes } from './routes/user';
 import {FileRoutes} from "./routes/file";
+import { environment } from '../../angular-src/src/environments/environment'
 
 const express = require('express');
 const path = require('path');
@@ -30,7 +31,7 @@ mongoose.connection.on('error', (err: any) => {
 const app = express();
 
 app.use(function (req: any, res: any, next: any) {
-    res.setHeader('Access-Control-Allow-Origin', 'http://localhost:4200');
+    res.setHeader('Access-Control-Allow-Origin', environment.clientUrl);
     res.setHeader('Access-Control-Allow-Methods', 'POST');
     res.setHeader('Access-Control-Allow-Headers', 'X-Requested-With,content-type');
     res.setHeader('Access-Control-Allow-Credentials', true);
@@ -38,7 +39,7 @@ app.use(function (req: any, res: any, next: any) {
 });
 
 var corsOptions = {
-    origin: 'http://localhost:4200',
+    origin: environment.clientUrl,
     optionsSuccessStatus: 200 // some legacy browsers (IE11, various SmartTVs) choke on 204
 }
 

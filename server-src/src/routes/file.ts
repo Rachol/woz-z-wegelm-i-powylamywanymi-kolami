@@ -13,8 +13,8 @@ const DB_PATH = "E:/Programming/BattleIsland/storage/Databases/96529230ba69f6ed1
 function clearScriptData (username: string, scriptName:string) {
     var db = new sqlite3.Database(DB_PATH);
 
-    let script = username + "/" + scriptName;
-    if (script.startsWith("/")) {
+    let script = username + "\\" + scriptName;
+    if (script.startsWith("\\")) {
         script = script.slice(1);
     }
 
