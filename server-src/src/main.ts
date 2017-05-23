@@ -31,6 +31,7 @@ mongoose.connection.on('error', (err: any) => {
 const app = express();
 
 app.use(function (req: any, res: any, next: any) {
+    console.log("Setting headers");
     res.setHeader('Access-Control-Allow-Origin', environment.clientUrl);
     res.setHeader('Access-Control-Allow-Methods', 'POST');
     res.setHeader('Access-Control-Allow-Headers', 'X-Requested-With,content-type');

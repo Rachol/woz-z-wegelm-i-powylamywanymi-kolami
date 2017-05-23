@@ -1,10 +1,12 @@
 import { DatabaseConfig } from './database';
 import { UserModel } from '../models/user';
 const sqlite3 = require('sqlite3').verbose();
+const path = require('path');
 
-const DB_PATH = "E:/Programming/BattleIsland/storage/Databases/96529230ba69f6ed1ef0770a494441cd.sqlite"
+const DB_PATH = path.join(__dirname, "../../../../database/results.db")
 
 function updateScriptData (username: string, scriptName:string, callback: any) {
+    console.log(DB_PATH);
     var db = new sqlite3.Database(DB_PATH);
 
     let script = username + "\\" + scriptName;

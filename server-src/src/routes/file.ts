@@ -3,12 +3,12 @@ import { UserModel } from '../models/user';
 let fs = require('fs');
 let path = require('path');
 
-const DIR = '../../uploads/';
+const DIR = '../../../../uploads/';
 const FINAL_DIR = path.join(__dirname, DIR);
 
 const sqlite3 = require('sqlite3').verbose();
 
-const DB_PATH = "E:/Programming/BattleIsland/storage/Databases/96529230ba69f6ed1ef0770a494441cd.sqlite"
+const DB_PATH = path.join(__dirname, "../../../../database/results.db");
 
 function clearScriptData (username: string, scriptName:string) {
     var db = new sqlite3.Database(DB_PATH);
